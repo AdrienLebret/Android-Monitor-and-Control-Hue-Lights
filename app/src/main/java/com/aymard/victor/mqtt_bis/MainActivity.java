@@ -1,5 +1,6 @@
 package com.aymard.victor.mqtt_bis;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -89,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
 
-
+                startActivity(new Intent(MainActivity.this, Manage_Lamps.class));
 
                 // TUTO 2
 /*

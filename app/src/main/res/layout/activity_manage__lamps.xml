@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:gravity="center">
+
+
+    <LinearLayout
+        android:clipToPadding="false"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/l1"
+                android:layout_width="155dp"
+                android:layout_height="200dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <SeekBar
+                    android:id="@+id/sbH1"
+                    style="@style/Widget.AppCompat.SeekBar.Discrete"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:max="360"
+                    android:progress="1" />
+
+                <TextView
+                    android:id="@+id/hue1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:text="TextView" />
+
+                <SeekBar
+                    android:id="@+id/sbS1"
+                    style="@style/Widget.AppCompat.SeekBar.Discrete"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:max="360"
+                    android:progress="1" />
+
+                <TextView
+                    android:id="@+id/sat1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:text="TextView" />
+
+                <SeekBar
+                    android:id="@+id/sbB1"
+                    style="@style/Widget.AppCompat.SeekBar.Discrete"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:max="360"
+                    android:progress="1" />
+
+                <TextView
+                    android:id="@+id/bri1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:text="TextView" />
+
+                <Button
+                    android:id="@+id/btn1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="LAMP 1: ON" />
+
+
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/l2"
+                android:layout_width="155dp"
+                android:layout_height="200dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <SeekBar
+                    android:id="@+id/sbH2"
+                    style="@style/Widget.AppCompat.SeekBar.Discrete"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:max="360"
+                    android:progress="1" />
+
+                <TextView
+                    android:id="@+id/hue2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:text="TextView" />
+
+                <SeekBar
+                    android:id="@+id/sbS2"
+                    style="@style/Widget.AppCompat.SeekBar.Discrete"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:max="360"
+                    android:progress="1" />
+
+                <TextView
+                    android:id="@+id/sat2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:text="TextView" />
+
+                <SeekBar
+                    android:id="@+id/sbB2"
+                    style="@style/Widget.AppCompat.SeekBar.Discrete"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:max="360"
+                    android:progress="1" />
+
+                <TextView
+                    android:id="@+id/bri2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:text="TextView" />
+
+                <Button
+                    android:id="@+id/btn2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="LAMP 2: ON" />
+
+
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:clipToPadding="false"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/l3"
+                android:layout_width="155dp"
+                android:layout_height="200dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <SeekBar
+                    android:id="@+id/sbH3"
+                    style="@style/Widget.AppCompat.SeekBar.Discrete"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:max="360"
+                    android:progress="1" />
+
+                <TextView
+                    android:id="@+id/hue3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:text="TextView" />
+
+                <SeekBar
+                    android:id="@+id/sbS3"
+                    style="@style/Widget.AppCompat.SeekBar.Discrete"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:max="360"
+                    android:progress="1" />
+
+                <TextView
+                    android:id="@+id/sat3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:text="TextView" />
+
+                <SeekBar
+                    android:id="@+id/sbB3"
+                    style="@style/Widget.AppCompat.SeekBar.Discrete"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:max="360"
+                    android:progress="1" />
+
+                <TextView
+                    android:id="@+id/bri3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:text="TextView" />
+
+                <Button
+                    android:id="@+id/btn3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="LAMP 3: ON" />
+
+
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/lG"
+                android:layout_width="155dp"
+                android:layout_height="200dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <SeekBar
+                    android:id="@+id/sbHG"
+                    style="@style/Widget.AppCompat.SeekBar.Discrete"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:max="360"
+                    android:progress="1" />
+
+                <TextView
+                    android:id="@+id/hueG"
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:text="TextView" />
+
+                <SeekBar
+                    android:id="@+id/sbSG"
+                    style="@style/Widget.AppCompat.SeekBar.Discrete"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:max="360"
+                    android:progress="1" />
+
+                <TextView
+                    android:id="@+id/satG"
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:text="TextView" />
+
+                <SeekBar
+                    android:id="@+id/sbBG"
+                    style="@style/Widget.AppCompat.SeekBar.Discrete"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:max="360"
+                    android:progress="1" />
+
+                <TextView
+                    android:id="@+id/briG"
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:text="TextView" />
+
+                <Button
+                    android:id="@+id/btnG"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="LAMPS : ON" />
+
+
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+
+</LinearLayout>
