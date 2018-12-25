@@ -8,6 +8,7 @@
     android:gravity="center">
 
 
+
     <LinearLayout
         android:clipToPadding="false"
         android:gravity="center"
@@ -73,7 +74,7 @@
                     android:id="@+id/btn1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="LAMP 1: ON" />
+                    android:text="LAMP1: ON" />
 
 
             </LinearLayout>
@@ -136,7 +137,7 @@
                     android:id="@+id/btn2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="LAMP 2: ON" />
+                    android:text="LAMP2: ON" />
 
 
             </LinearLayout>
@@ -208,7 +209,7 @@
                     android:id="@+id/btn3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="LAMP 3: ON" />
+                    android:text="LAMP3: ON" />
 
 
             </LinearLayout>
@@ -271,7 +272,7 @@
                     android:id="@+id/btnG"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="LAMPS : ON" />
+                    android:text="LAMPS: ON" />
 
 
             </LinearLayout>
