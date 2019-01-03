@@ -20,6 +20,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -31,7 +32,8 @@ import android.widget.Toast;
 
 
 
-public class bluetooth_connection {
+
+public class  bluetooth_connection extends AppCompatActivity {
     public static final int REQUEST_ACCES_COARSE_LOCATION = 1;
     public static final int REQUEST_ENABLE_BLUETOOTH = 11;
     private ListView devicesList;
