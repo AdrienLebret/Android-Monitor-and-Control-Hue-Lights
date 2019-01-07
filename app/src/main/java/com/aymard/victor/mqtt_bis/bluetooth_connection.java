@@ -31,8 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-
-public class bluetooth_connection  extends AppCompatActivity {
+public class  bluetooth_connection extends AppCompatActivity {
     public static final int REQUEST_ACCES_COARSE_LOCATION = 1;
     public static final int REQUEST_ENABLE_BLUETOOTH = 11;
     private ListView devicesList;
