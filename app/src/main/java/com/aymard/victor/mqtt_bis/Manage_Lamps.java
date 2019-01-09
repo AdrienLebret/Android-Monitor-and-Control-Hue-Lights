@@ -1,6 +1,7 @@
 package com.aymard.victor.mqtt_bis;
 
 import android.graphics.Color;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,13 +10,28 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+/**
+ * Created by Adrien LEBRET on 29.12.2018.
+ * activité permettant les interactions bluetooth
+ * activation / désactivation / scan des appareils disponnibles
+ */
 
 public class Manage_Lamps extends AppCompatActivity {
+
+
+    private Handler mHandler = new Handler();
+
+    //=========================================
+    // INFORMATIONS THAT WE NEED FOR THE LAMPS
+    //=========================================
 
     int progressH1, progressH2, progressH3, progressHG = 360;
     int progressS1, progressS2, progressS3, progressSG = 100;
     int progressB1, progressB2, progressB3, progressBG = 100;
+    boolean switch1, switch2, switch3 = true;
+    boolean isConnected1, isConnected2, isConnected3 = false;
 
     // LAMP 1
     LinearLayout l1;
@@ -47,8 +63,10 @@ public class Manage_Lamps extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage__lamps);
-
+        mToastRunnable.run();
+        Log.d("JONATHAN", "RUN APPELé");
         initialize();
+
     }
 
     /**
@@ -79,8 +97,10 @@ public class Manage_Lamps extends AppCompatActivity {
             public void onClick(View v) {
                 if (btn1.getText().equals("LAMP1: ON")){
                     btn1.setText("LAMP1: OFF");
+                    switch1 = false;
                  }else{
                     btn1.setText("LAMP1: ON");
+                    switch1 = true;
                     changeBackgroundColor(1, progressH1, progressS1, progressB1);
                 }
             }
@@ -184,8 +204,10 @@ public class Manage_Lamps extends AppCompatActivity {
             public void onClick(View v) {
                 if (btn2.getText().equals("LAMP2: ON")){
                     btn2.setText("LAMP2: OFF");
+                    switch2 = false;
                 }else{
                     btn2.setText("LAMP2: ON");
+                    switch2 = true;
                     changeBackgroundColor(2 ,progressH2, progressS2, progressB2);
                 }
             }
@@ -289,8 +311,10 @@ public class Manage_Lamps extends AppCompatActivity {
             public void onClick(View v) {
                 if (btn3.getText().equals("LAMP3: ON")){
                     btn3.setText("LAMP3: OFF");
+                    switch3 = false;
                 }else{
                     btn3.setText("LAMP3: ON");
+                    switch3 = true;
                     changeBackgroundColor(3 ,progressH3, progressS3, progressB3);
                 }
             }
@@ -398,11 +422,18 @@ public class Manage_Lamps extends AppCompatActivity {
                     btn1.setText("LAMP1: OFF");
                     btn2.setText("LAMP2: OFF");
                     btn3.setText("LAMP3: OFF");
+                    switch1 = false;
+                    switch2 = false;
+                    switch3 = false;
                 }else{
                     btnG.setText("LAMPS: ON");
                     btn1.setText("LAMP1: ON");
                     btn2.setText("LAMP2: ON");
                     btn3.setText("LAMP3: ON");
+                    switch1 = true;
+                    switch2 = true;
+                    switch3 = true;
+
                 }
 
 
@@ -559,6 +590,8 @@ public class Manage_Lamps extends AppCompatActivity {
         }
     }
 
+
+
     /**
      * @param H : 0-360
      * @param S : 0-100
@@ -634,6 +667,43 @@ public class Manage_Lamps extends AppCompatActivity {
             bs = "0" + bs;
         return "#" + rs + gs + bs;
     }
+
+
+    /**
+     * Method that will send every second a message to the CLOUD
+     */
+
+    private Runnable mToastRunnable = new Runnable() {
+        @Override
+        public void run() {
+            Log.d("JONATHAN", "ON EST DANS LE RUN");
+            sendMessage();
+            mHandler.postDelayed(this, 1000);
+        }
+    };
+
+    public void sendMessage(){
+        if(isConnected1){
+
+        }
+        if (isConnected2){
+
+        }
+        if (isConnected3){
+
+        }
+    }
+
+    /**
+     * Method of creation the JSON / String
+     */
+    public String createMessage(){
+        String msg ="";
+
+        return msg;
+
+    }
+
 
 
 }
