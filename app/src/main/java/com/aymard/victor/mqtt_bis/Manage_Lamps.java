@@ -2,10 +2,7 @@ package com.aymard.victor.mqtt_bis;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -18,6 +15,8 @@ import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * Created by Adrien LEBRET on 29.12.2018.
@@ -121,7 +120,7 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
                     changeBackgroundColor(1, progressH1, progressS1, progressB1);
                 }
 
-                cloudManager.publishWithinTopic(cloudManager.topic1, createMessage(lamp1_isOn,progressH1, progressS1, progressB1));
+                cloudManager.publishWithinTopic(cloudManager.getTopic1(), createMessage(lamp1_isOn,progressH1, progressS1, progressB1));
             }
         });
 
@@ -147,7 +146,7 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                cloudManager.publishWithinTopic(cloudManager.topic1, createMessage(lamp1_isOn,progressH1, progressS1, progressB1));
+                cloudManager.publishWithinTopic(cloudManager.getTopic1(), createMessage(lamp1_isOn,progressH1, progressS1, progressB1));
             }
         });
 
@@ -173,7 +172,7 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                cloudManager.publishWithinTopic(cloudManager.topic1, createMessage(lamp1_isOn,progressH1, progressS1, progressB1));
+                cloudManager.publishWithinTopic(cloudManager.getTopic1(), createMessage(lamp1_isOn,progressH1, progressS1, progressB1));
             }
         });
 
@@ -200,7 +199,7 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                cloudManager.publishWithinTopic(cloudManager.topic1, createMessage(lamp1_isOn,progressH1, progressS1, progressB1));
+                cloudManager.publishWithinTopic(cloudManager.getTopic1(), createMessage(lamp1_isOn,progressH1, progressS1, progressB1));
             }
         });
 
@@ -232,7 +231,7 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
                     lamp2_isOn = true;
                     changeBackgroundColor(2 ,progressH2, progressS2, progressB2);
                 }
-                cloudManager.publishWithinTopic(cloudManager.topic2, createMessage(lamp2_isOn,progressH2, progressS2, progressB2));
+                cloudManager.publishWithinTopic(cloudManager.getTopic2(), createMessage(lamp2_isOn,progressH2, progressS2, progressB2));
             }
         });
 
@@ -259,7 +258,7 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                cloudManager.publishWithinTopic(cloudManager.topic2, createMessage(lamp2_isOn,progressH2, progressS2, progressB2));
+                cloudManager.publishWithinTopic(cloudManager.getTopic2(), createMessage(lamp2_isOn,progressH2, progressS2, progressB2));
             }
         });
 
@@ -285,7 +284,7 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                cloudManager.publishWithinTopic(cloudManager.topic2, createMessage(lamp2_isOn,progressH2, progressS2, progressB2));
+                cloudManager.publishWithinTopic(cloudManager.getTopic2(), createMessage(lamp2_isOn,progressH2, progressS2, progressB2));
             }
         });
 
@@ -312,7 +311,7 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                cloudManager.publishWithinTopic(cloudManager.topic2, createMessage(lamp2_isOn,progressH2, progressS2, progressB2));
+                cloudManager.publishWithinTopic(cloudManager.getTopic2(), createMessage(lamp2_isOn,progressH2, progressS2, progressB2));
             }
         });
 
@@ -344,7 +343,7 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
                     changeBackgroundColor(3 ,progressH3, progressS3, progressB3);
                 }
 
-                cloudManager.publishWithinTopic(cloudManager.topic2, createMessage(lamp2_isOn,progressH2, progressS2, progressB2));
+                cloudManager.publishWithinTopic(cloudManager.getTopic2(), createMessage(lamp2_isOn,progressH2, progressS2, progressB2));
             }
         });
 
@@ -371,7 +370,7 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                cloudManager.publishWithinTopic(cloudManager.topic3, createMessage(lamp3_isOn,progressH3, progressS3, progressB3));
+                cloudManager.publishWithinTopic(cloudManager.getTopic3(), createMessage(lamp3_isOn,progressH3, progressS3, progressB3));
             }
         });
 
@@ -397,7 +396,7 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                cloudManager.publishWithinTopic(cloudManager.topic3, createMessage(lamp3_isOn,progressH3, progressS3, progressB3));
+                cloudManager.publishWithinTopic(cloudManager.getTopic3(), createMessage(lamp3_isOn,progressH3, progressS3, progressB3));
             }
         });
 
@@ -424,7 +423,7 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                cloudManager.publishWithinTopic(cloudManager.topic3, createMessage(lamp3_isOn,progressH3, progressS3, progressB3));
+                cloudManager.publishWithinTopic(cloudManager.getTopic3(), createMessage(lamp3_isOn,progressH3, progressS3, progressB3));
             }
         });
 
@@ -697,13 +696,13 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
 
         if(isConnected1){
             String dataToSend = createMessage(lamp1_isOn,progressH1, progressS1, progressB1);
-            cloudManager.publishWithinTopic(cloudManager.topic1, dataToSend);
+            cloudManager.publishWithinTopic(cloudManager.getTopic1(), dataToSend);
         } if (isConnected2){
             String dataToSend = createMessage(lamp2_isOn,progressH2, progressS2, progressB2);
-            cloudManager.publishWithinTopic(cloudManager.topic2, dataToSend);
+            cloudManager.publishWithinTopic(cloudManager.getTopic2(), dataToSend);
         } if (isConnected3){
             String dataToSend = createMessage(lamp3_isOn,progressH3, progressS3, progressB3);
-            cloudManager.publishWithinTopic(cloudManager.topic3, dataToSend);
+            cloudManager.publishWithinTopic(cloudManager.getTopic3(), dataToSend);
         }
     }
 
@@ -744,6 +743,18 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
 
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
+        JSONArray data = new JSONArray(message.toString());
+
+        if (isConnected1) {
+            JSONObject lampData = data.getJSONObject(0);
+
+        } if (isConnected2) {
+            JSONObject lampData = data.getJSONObject(1);
+
+        } if (isConnected3) {
+            JSONObject lampData = data.getJSONObject(2);
+
+        }
 
     }
 

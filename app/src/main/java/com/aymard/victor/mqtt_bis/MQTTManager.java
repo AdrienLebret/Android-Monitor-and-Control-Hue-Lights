@@ -21,10 +21,10 @@ public class MQTTManager extends MqttAndroidClient {
     private String userName = "bdnsrfca";
     private String password = "cfL0e0aBHBx8";
 
-    public String topic1 = "lamp/lamp1";
-    public String topic2 = "lamp/lamp2";
-    public String topic3 = "lamp/lamp3";
-    public String topicGeneral = "lamp/#";
+    private String topic1 = "lamp/lamp1";
+    private String topic2 = "lamp/lamp2";
+    private String topic3 = "lamp/lamp3";
+    private String topicGeneral = "lamp/#";
 
     int qos = 1;
 
@@ -85,9 +85,9 @@ public class MQTTManager extends MqttAndroidClient {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     Toast.makeText(content, "We are connected", Toast.LENGTH_SHORT).show();
-                    subscribeTopic(topic1);
-                    subscribeTopic(topic2);
-                    subscribeTopic(topic3);
+                    subscribeTopic(getTopic1());
+                    subscribeTopic(getTopic2());
+                    subscribeTopic(getTopic3());
                     Toast.makeText(content, "SUBCRIBE", Toast.LENGTH_SHORT).show();
 
                 }
@@ -123,4 +123,12 @@ public class MQTTManager extends MqttAndroidClient {
             e.printStackTrace();
         }
     }
+
+    public String getTopic1() { return topic1; }
+
+    public String getTopic2() { return topic2; }
+
+    public String getTopic3() { return topic3; }
+
+    public void setTopicGeneral(String topicGeneral) { this.topicGeneral = topicGeneral; }
 }
