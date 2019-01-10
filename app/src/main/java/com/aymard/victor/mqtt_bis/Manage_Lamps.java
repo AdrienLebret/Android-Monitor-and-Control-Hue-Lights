@@ -13,15 +13,10 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-
-import java.io.UnsupportedEncodingException;
 
 /**
  * Created by Adrien LEBRET on 29.12.2018.
@@ -41,8 +36,9 @@ public class Manage_Lamps extends AppCompatActivity {
     int progressH1, progressH2, progressH3, progressHG = 360;
     int progressS1, progressS2, progressS3, progressSG = 100;
     int progressB1, progressB2, progressB3, progressBG = 100;
-    boolean switch1, switch2, switch3 = true;
+    boolean lamp1_isOn, lamp2_isOn, lamp3_isOn = true;
     boolean isConnected1, isConnected2, isConnected3 = true;
+
 
     MQTTManager cloudManager = null;
 
@@ -137,12 +133,12 @@ public class Manage_Lamps extends AppCompatActivity {
             public void onClick(View v) {
                 if (btn1.getText().equals("LAMP1: ON")){
                     btn1.setText("LAMP1: OFF");
-                    switch1 = false;
+                    lamp1_isOn = false;
                     rect1A.setVisibility(View.INVISIBLE);
                     rect1B.setVisibility(View.VISIBLE);
                  }else{
                     btn1.setText("LAMP1: ON");
-                    switch1 = true;
+                    lamp1_isOn = true;
                     rect1A.setVisibility(View.VISIBLE);
                     rect1B.setVisibility(View.INVISIBLE);
                     changeBackgroundColor(1, progressH1, progressS1, progressB1);
@@ -252,10 +248,10 @@ public class Manage_Lamps extends AppCompatActivity {
             public void onClick(View v) {
                 if (btn2.getText().equals("LAMP2: ON")){
                     btn2.setText("LAMP2: OFF");
-                    switch2 = false;
+                    lamp2_isOn = false;
                 }else{
                     btn2.setText("LAMP2: ON");
-                    switch2 = true;
+                    lamp2_isOn = true;
                     changeBackgroundColor(2 ,progressH2, progressS2, progressB2);
                 }
             }
@@ -362,10 +358,10 @@ public class Manage_Lamps extends AppCompatActivity {
             public void onClick(View v) {
                 if (btn3.getText().equals("LAMP3: ON")){
                     btn3.setText("LAMP3: OFF");
-                    switch3 = false;
+                    lamp3_isOn = false;
                 }else{
                     btn3.setText("LAMP3: ON");
-                    switch3 = true;
+                    lamp3_isOn = true;
                     changeBackgroundColor(3 ,progressH3, progressS3, progressB3);
                 }
             }
@@ -473,17 +469,17 @@ public class Manage_Lamps extends AppCompatActivity {
                     btn1.setText("LAMP1: OFF");
                     btn2.setText("LAMP2: OFF");
                     btn3.setText("LAMP3: OFF");
-                    switch1 = false;
-                    switch2 = false;
-                    switch3 = false;
+                    lamp1_isOn = false;
+                    lamp2_isOn = false;
+                    lamp3_isOn = false;
                 }else{
                     btnG.setText("LAMPS: ON");
                     btn1.setText("LAMP1: ON");
                     btn2.setText("LAMP2: ON");
                     btn3.setText("LAMP3: ON");
-                    switch1 = true;
-                    switch2 = true;
-                    switch3 = true;
+                    lamp1_isOn = true;
+                    lamp2_isOn = true;
+                    lamp3_isOn = true;
 
                 }
 
@@ -728,25 +724,28 @@ public class Manage_Lamps extends AppCompatActivity {
         @Override
         public void run() {
             Log.d("JONATHAN", "ON EST DANS LE RUN");
-            sendMessage();
+            sendAllMessages();
             Log.d("JONATHAN", "MESSAGE ENVOYE");
             mHandler.postDelayed(this, 1000);
         }
     };
 
-    public void sendMessage(){
-        isConnected1 = true;
+    public void sendAllMessages(){
+
         Log.d("JONATHAN", "Send Message");
         if(isConnected1){
             Log.d("JONATHAN", "1 CONNECTE");
+            cloudManager.publishWithinTopic(cloudManager.topic1, createMessage(lamp1_isOn,progressH1, progressS1, progressB1));
         }
 
         if (isConnected2){
-            Log.d("JONATHAN", "2 CONNECTE");
+
+            cloudManager.publishWithinTopic(cloudManager.topic1, createMessage(lamp2_isOn,progressH2, progressS2, progressB2));
         }
 
         if (isConnected3){
             Log.d("JONATHAN", "3 CONNECTE");
+            cloudManager.publishWithinTopic(cloudManager.topic1, createMessage(lamp3_isOn,progressH3, progressS3, progressB3));
         }
     }
 
@@ -758,17 +757,14 @@ public class Manage_Lamps extends AppCompatActivity {
      */
     public String createMessage(boolean connected, int h, int s, int b ){
         int y = h * 65535 / 360; // hue runs from 0 to 65535
-        String bool;
+        String connectedToString;
         if (connected){
-            bool = "true";
+            connectedToString = "true";
         } else {
-            bool = "false";
+            connectedToString = "false";
         }
         // Le message doit contenir les guillemets Attention !
-        String msg ="{on:" + bool + ", sat:" + s + ", bri:" + b + ", hue:" + y + "}";
+        String msg ="{'on':" + connectedToString + ", 'sat':" + s + ", 'bri':" + b + ", 'hue':" + y + "}";
         return msg;
     }
-
-
-
 }

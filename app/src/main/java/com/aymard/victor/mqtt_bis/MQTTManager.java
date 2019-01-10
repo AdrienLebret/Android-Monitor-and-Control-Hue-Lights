@@ -25,21 +25,48 @@ public class MQTTManager extends MqttAndroidClient {
     private String userName = "fwrpsmyo";
     private String password = "TFyMjVunjGCM";
 
-    private String topic1 = "lamp/lamp1";
-    private String topic2 = "lamp/lamp2";
-    private String topic3 = "lamp/lamp3";
-    private String topicGeneral = "lamp/#";
+    public String topic1 = "lamp/lamp1";
+    public String topic2 = "lamp/lamp2";
+    public String topic3 = "lamp/lamp3";
+    public String topicGeneral = "lamp/#";
 
     Context content;
 
     int qos = 1;
 
+    /* CONSTRUCTOR */
     public MQTTManager(Context content, String serverURI, String clientId) {
         super(content, serverURI, clientId);
         content = content;
         this.subscribeInstance(content);
     }
 
+    /* PUBLICS FUNCTIONS */
+
+    /** Function to send a message
+     *
+     * @Param : on the topic named: topicName
+     * @Param : the string to send
+     */
+
+    public void publishWithinTopic(String topicName, String dataStr) {
+
+        byte[] encodedPayload = new byte[0];
+        try {
+            encodedPayload = dataStr.getBytes("UTF-8");
+            MqttMessage message = new MqttMessage(encodedPayload);
+            publish(topicName, message);
+        } catch (UnsupportedEncodingException | MqttException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setQos(int qos) {
+        qos = qos;
+    }
+
+
+    /* PRIVATE FUNCTIONS */
     private void subscribeInstance(final Context content) {
         // CONNECTED PART
         // TUTO 1
@@ -80,7 +107,7 @@ public class MQTTManager extends MqttAndroidClient {
         }
     }
 
-    protected void subscribeTopic(String named){
+    private void subscribeTopic(String named){
         try {
             IMqttToken subToken = subscribe(named, qos);
             subToken.setActionCallback(new IMqttActionListener() {
@@ -100,21 +127,5 @@ public class MQTTManager extends MqttAndroidClient {
         } catch (MqttException e) {
             e.printStackTrace();
         }
-    }
-
-    void publishWithinTopic(String topicName, String dataStr) {
-
-        byte[] encodedPayload = new byte[0];
-        try {
-            encodedPayload = dataStr.getBytes("UTF-8");
-            MqttMessage message = new MqttMessage(encodedPayload);
-            publish(topicName, message);
-        } catch (UnsupportedEncodingException | MqttException e) {
-            e.printStackTrace();
-        }
-    }
-
-    void setQos(int qos) {
-        qos = qos;
     }
 }
