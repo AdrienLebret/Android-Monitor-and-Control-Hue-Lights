@@ -32,8 +32,10 @@ import android.widget.Toast;
 
 
 public class  bluetooth_connection extends AppCompatActivity {
+
     public static final int REQUEST_ACCES_COARSE_LOCATION = 1;
     public static final int REQUEST_ENABLE_BLUETOOTH = 11;
+
     private ListView devicesList;
     private Button scanningBtn, mOffBtn;
     private Button mOnBtn;
@@ -79,9 +81,9 @@ public class  bluetooth_connection extends AppCompatActivity {
 
         //set image according to bluetooth status (on/off)
         if (bluetoothAdapter.isEnabled()) {
-            mBlueIv.setImageResource(R.drawable.ic_action_on);
+           // mBlueIv.setImageResource(R.drawable.ic_action_on);
         } else {
-            mBlueIv.setImageResource(R.drawable.ic_action_off);
+           // mBlueIv.setImageResource(R.drawable.ic_action_off);
         }
 
 
@@ -96,7 +98,7 @@ public class  bluetooth_connection extends AppCompatActivity {
                     //intent to on bluetooth
                     Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                     startActivityForResult(intent, REQUEST_ENABLE_BLUETOOTH);
-                    mBlueIv.setImageResource(R.drawable.ic_action_on);
+                   // mBlueIv.setImageResource(R.drawable.ic_action_on);
                 } else {
                     showToast("Bluetooth is already on");
                 }
@@ -111,7 +113,7 @@ public class  bluetooth_connection extends AppCompatActivity {
                     bluetoothAdapter.disable();
                     mStatusBlueTv.setText("Bluetooth is not available");
                     showToast("Turning Bluetooth off");
-                    mBlueIv.setImageResource(R.drawable.ic_action_off);
+                 //   mBlueIv.setImageResource(R.drawable.ic_action_off);
                 } else {
                     showToast("Bluetooth is already off");
                 }
@@ -175,7 +177,7 @@ public class  bluetooth_connection extends AppCompatActivity {
                 } else {
                     Toast.makeText(this, "Bluetooth is activated", Toast.LENGTH_SHORT).show();
                 }
-                mBlueIv.setImageResource(R.drawable.ic_action_on);
+              //  mBlueIv.setImageResource(R.drawable.ic_action_on);
             } else {
                 Toast.makeText(this, "You need to activate Bluetooth", Toast.LENGTH_SHORT).show();
                 //Intent enableIntent = new Intent (BluetoothAdapter.ACTION_REQUEST_ENABLE); //on peut mettre ces lignes pour que lorsque l'on clique sur le btn recherche il active automatiquement le bluetooth et lance la recherche

@@ -23,7 +23,7 @@
             <LinearLayout
                 android:id="@+id/l1"
                 android:layout_width="155dp"
-                android:layout_height="200dp"
+                android:layout_height="242dp"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -52,7 +52,8 @@
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:max="360"
-                    android:progress="1" />
+                    android:progress="1"
+                    android:padding="7dp"/>
 
                 <TextView
                     android:id="@+id/hue1"
@@ -66,7 +67,8 @@
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:max="360"
-                    android:progress="1" />
+                    android:progress="1"
+                    android:padding="7dp"/>
 
                 <TextView
                     android:id="@+id/sat1"
@@ -80,7 +82,8 @@
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:max="360"
-                    android:progress="1" />
+                    android:progress="1"
+                    android:padding="7dp"/>
 
                 <TextView
                     android:id="@+id/bri1"
@@ -105,7 +108,7 @@
             <LinearLayout
                 android:id="@+id/l2"
                 android:layout_width="155dp"
-                android:layout_height="200dp"
+                android:layout_height="242dp"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -134,7 +137,8 @@
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:max="360"
-                    android:progress="1" />
+                    android:progress="1"
+                    android:padding="7dp"/>
 
                 <TextView
                     android:id="@+id/hue2"
@@ -148,7 +152,8 @@
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:max="360"
-                    android:progress="1" />
+                    android:progress="1"
+                    android:padding="7dp"/>
 
                 <TextView
                     android:id="@+id/sat2"
@@ -162,7 +167,8 @@
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:max="360"
-                    android:progress="1" />
+                    android:progress="1"
+                    android:padding="7dp"/>
 
                 <TextView
                     android:id="@+id/bri2"
@@ -196,7 +202,7 @@
             <LinearLayout
                 android:id="@+id/l3"
                 android:layout_width="155dp"
-                android:layout_height="200dp"
+                android:layout_height="242dp"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -225,7 +231,8 @@
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:max="360"
-                    android:progress="1" />
+                    android:progress="1"
+                    android:padding="7dp"/>
 
                 <TextView
                     android:id="@+id/hue3"
@@ -239,7 +246,8 @@
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:max="360"
-                    android:progress="1" />
+                    android:progress="1"
+                    android:padding="7dp" />
 
                 <TextView
                     android:id="@+id/sat3"
@@ -253,7 +261,8 @@
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:max="360"
-                    android:progress="1" />
+                    android:progress="1"
+                    android:padding="7dp"/>
 
                 <TextView
                     android:id="@+id/bri3"
@@ -278,7 +287,7 @@
             <LinearLayout
                 android:id="@+id/lG"
                 android:layout_width="155dp"
-                android:layout_height="200dp"
+                android:layout_height="242dp"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -308,7 +317,8 @@
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:max="360"
-                    android:progress="1" />
+                    android:progress="1"
+                    android:padding="7dp"/>
 
                 <TextView
                     android:id="@+id/hueG"
@@ -322,7 +332,8 @@
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:max="360"
-                    android:progress="1" />
+                    android:progress="1"
+                    android:padding="7dp"/>
 
                 <TextView
                     android:id="@+id/satG"
@@ -336,7 +347,8 @@
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:max="360"
-                    android:progress="1" />
+                    android:progress="1"
+                    android:padding="7dp"/>
 
                 <TextView
                     android:id="@+id/briG"
@@ -349,8 +361,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="LAMPS: ON" />
-
-
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>

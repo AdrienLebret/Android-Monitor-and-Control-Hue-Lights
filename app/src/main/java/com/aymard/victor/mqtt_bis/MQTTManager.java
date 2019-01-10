@@ -1,6 +1,7 @@
 package com.aymard.victor.mqtt_bis;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
@@ -17,8 +18,6 @@ import java.io.UnsupportedEncodingException;
  */
 public class MQTTManager extends MqttAndroidClient {
 
-    //MqttAndroidClient client;
-
     private String userName = "bdnsrfca";
     private String password = "cfL0e0aBHBx8";
 
@@ -27,14 +26,13 @@ public class MQTTManager extends MqttAndroidClient {
     public String topic3 = "lamp/lamp3";
     public String topicGeneral = "lamp/#";
 
-    Context content;
-
     int qos = 1;
 
     /* CONSTRUCTOR */
+
     public MQTTManager(Context content, String serverURI, String clientId) {
         super(content, serverURI, clientId);
-        content = content;
+
         this.subscribeInstance(content);
     }
 
@@ -45,7 +43,6 @@ public class MQTTManager extends MqttAndroidClient {
      * @Param : on the topic named: topicName
      * @Param : the string to send
      */
-
     public void publishWithinTopic(String topicName, String dataStr) {
 
         byte[] encodedPayload = new byte[0];
@@ -53,6 +50,7 @@ public class MQTTManager extends MqttAndroidClient {
             encodedPayload = dataStr.getBytes("UTF-8");
             MqttMessage message = new MqttMessage(encodedPayload);
             publish(topicName, message);
+            Log.d("Send Message tag", dataStr);
         } catch (UnsupportedEncodingException | MqttException e) {
             e.printStackTrace();
         }

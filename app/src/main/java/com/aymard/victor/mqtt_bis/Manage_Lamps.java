@@ -12,8 +12,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 /**
  * Created by Adrien LEBRET on 29.12.2018.
@@ -21,10 +25,7 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
  * activation / désactivation / scan des appareils disponnibles
  */
 
-public class Manage_Lamps extends AppCompatActivity {
-
-
-    private Handler mHandler = new Handler();
+public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
 
     //=========================================
     // INFORMATIONS THAT WE NEED FOR THE LAMPS
@@ -36,13 +37,9 @@ public class Manage_Lamps extends AppCompatActivity {
     boolean lamp1_isOn, lamp2_isOn, lamp3_isOn = true;
     boolean isConnected1, isConnected2, isConnected3;
 
+    MQTTManager cloudManager;
 
-    MQTTManager cloudManager = null;
-    HandlerThread thread;
-    Handler handler;
-    int delay; //milliseconds
-
-    String clientId = MqttClient.generateClientId();
+    private String clientId = MqttClient.generateClientId();
     private String urlServer = "tcp://m20.cloudmqtt.com:19003";
 
     // LAMP 1
@@ -71,7 +68,6 @@ public class Manage_Lamps extends AppCompatActivity {
     SeekBar sbHG, sbSG, sbBG;
     TextView hueG, satG, briG;
     Button btnG;
-
     // http://colorizer.org/
 
     @Override
@@ -81,35 +77,7 @@ public class Manage_Lamps extends AppCompatActivity {
         initialize();
 
         cloudManager = new MQTTManager(this, urlServer, clientId);
-        /*cloudManager.setCallback(new MqttCallback() {
-            @Override
-            public void connectionLost(Throwable cause) {
-
-            }
-
-            @Override
-            public void messageArrived(String topic, MqttMessage message) throws Exception {
-                Toast.makeText(Manage_Lamps.this, new String(message.getPayload()), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void deliveryComplete(IMqttDeliveryToken token) {
-
-            }
-        });*/
-
-        thread = new HandlerThread("NewThread", Thread.MIN_PRIORITY);
-        thread.start();
-
-        handler = new Handler(thread.getLooper());
-        delay = 1000;
-
-        handler.postDelayed(new Runnable(){
-            public void run(){
-                sendAllMessages();
-                handler.postDelayed(this, delay);
-            }
-        }, delay);
+        cloudManager.setCallback(this);
     }
 
     /**
@@ -127,17 +95,16 @@ public class Manage_Lamps extends AppCompatActivity {
         // LAMP 1
         //========
 
-        rect1A = (ImageView) findViewById(R.id.rect1A);
-        rect1B =(ImageView) findViewById(R.id.rect1B);
+        rect1A = findViewById(R.id.rect1A);
+        rect1B = findViewById(R.id.rect1B);
 
-        l1 = (LinearLayout) findViewById(R.id.l1);
+        l1 = findViewById(R.id.l1);
         //l1.setBackgroundColor(Color.parseColor("#b71a51")); //
 
-        btn1 = (Button) findViewById(R.id.btn1);
+        btn1 = findViewById(R.id.btn1);
         /**
          * ADD ACTION
          */
-
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -154,7 +121,7 @@ public class Manage_Lamps extends AppCompatActivity {
                     changeBackgroundColor(1, progressH1, progressS1, progressB1);
                 }
 
-                cloudManager.publishWithinTopic(cloudManager.topic1, "mon cul");
+                cloudManager.publishWithinTopic(cloudManager.topic1, createMessage(lamp1_isOn,progressH1, progressS1, progressB1));
             }
         });
 
@@ -171,7 +138,6 @@ public class Manage_Lamps extends AppCompatActivity {
                 progressH1 = i;
                 hue1.setText("H: " + progressH1);
                 changeBackgroundColor( 1 ,progressH1, progressS1, progressB1);
-
             }
 
             @Override
@@ -181,7 +147,7 @@ public class Manage_Lamps extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                cloudManager.publishWithinTopic(cloudManager.topic1, createMessage(lamp1_isOn,progressH1, progressS1, progressB1));
             }
         });
 
@@ -207,7 +173,7 @@ public class Manage_Lamps extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                cloudManager.publishWithinTopic(cloudManager.topic1, createMessage(lamp1_isOn,progressH1, progressS1, progressB1));
             }
         });
 
@@ -234,7 +200,7 @@ public class Manage_Lamps extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                cloudManager.publishWithinTopic(cloudManager.topic1, createMessage(lamp1_isOn,progressH1, progressS1, progressB1));
             }
         });
 
@@ -261,11 +227,12 @@ public class Manage_Lamps extends AppCompatActivity {
                 if (btn2.getText().equals("LAMP2: ON")){
                     btn2.setText("LAMP2: OFF");
                     lamp2_isOn = false;
-                }else{
+                } else {
                     btn2.setText("LAMP2: ON");
                     lamp2_isOn = true;
                     changeBackgroundColor(2 ,progressH2, progressS2, progressB2);
                 }
+                cloudManager.publishWithinTopic(cloudManager.topic2, createMessage(lamp2_isOn,progressH2, progressS2, progressB2));
             }
         });
 
@@ -292,7 +259,7 @@ public class Manage_Lamps extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                cloudManager.publishWithinTopic(cloudManager.topic2, createMessage(lamp2_isOn,progressH2, progressS2, progressB2));
             }
         });
 
@@ -318,7 +285,7 @@ public class Manage_Lamps extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                cloudManager.publishWithinTopic(cloudManager.topic2, createMessage(lamp2_isOn,progressH2, progressS2, progressB2));
             }
         });
 
@@ -345,7 +312,7 @@ public class Manage_Lamps extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                cloudManager.publishWithinTopic(cloudManager.topic2, createMessage(lamp2_isOn,progressH2, progressS2, progressB2));
             }
         });
 
@@ -371,11 +338,13 @@ public class Manage_Lamps extends AppCompatActivity {
                 if (btn3.getText().equals("LAMP3: ON")){
                     btn3.setText("LAMP3: OFF");
                     lamp3_isOn = false;
-                }else{
+                } else {
                     btn3.setText("LAMP3: ON");
                     lamp3_isOn = true;
                     changeBackgroundColor(3 ,progressH3, progressS3, progressB3);
                 }
+
+                cloudManager.publishWithinTopic(cloudManager.topic2, createMessage(lamp2_isOn,progressH2, progressS2, progressB2));
             }
         });
 
@@ -402,7 +371,7 @@ public class Manage_Lamps extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                cloudManager.publishWithinTopic(cloudManager.topic3, createMessage(lamp3_isOn,progressH3, progressS3, progressB3));
             }
         });
 
@@ -428,7 +397,7 @@ public class Manage_Lamps extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                cloudManager.publishWithinTopic(cloudManager.topic3, createMessage(lamp3_isOn,progressH3, progressS3, progressB3));
             }
         });
 
@@ -455,7 +424,7 @@ public class Manage_Lamps extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                cloudManager.publishWithinTopic(cloudManager.topic3, createMessage(lamp3_isOn,progressH3, progressS3, progressB3));
             }
         });
 
@@ -484,7 +453,7 @@ public class Manage_Lamps extends AppCompatActivity {
                     lamp1_isOn = false;
                     lamp2_isOn = false;
                     lamp3_isOn = false;
-                }else{
+                } else {
                     btnG.setText("LAMPS: ON");
                     btn1.setText("LAMP1: ON");
                     btn2.setText("LAMP2: ON");
@@ -492,10 +461,9 @@ public class Manage_Lamps extends AppCompatActivity {
                     lamp1_isOn = true;
                     lamp2_isOn = true;
                     lamp3_isOn = true;
-
                 }
 
-
+                sendAllMessages();
             }
         });
 
@@ -533,7 +501,7 @@ public class Manage_Lamps extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                sendAllMessages();
             }
         });
 
@@ -570,7 +538,7 @@ public class Manage_Lamps extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                sendAllMessages();
             }
         });
 
@@ -609,11 +577,9 @@ public class Manage_Lamps extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                sendAllMessages();
             }
         });
-
-
     }
 
     private void changeBackgroundColor(int lamp,int hue, int saturation, int brightness) {
@@ -621,13 +587,12 @@ public class Manage_Lamps extends AppCompatActivity {
         String hexResutlt = hsvToRGB(hue,saturation,brightness);
         //String cutString = hexResutlt.substring(0, 7);
 
-
-        Log.d("JONATHAN", "H : " + hue + " S : " + saturation + " B : " + brightness);
-
-        Log.d("JONATHAN", "hsvToRGB : " + hexResutlt);
-
+        /*
+            DEBUG
+        */
+        //Log.d("JONATHAN", "H : " + hue + " S : " + saturation + " B : " + brightness);
+        //Log.d("JONATHAN", "hsvToRGB : " + hexResutlt);
         //Log.d("JONATHAN", "CutString : " + cutString);
-
 
         switch (lamp){
             case 1:
@@ -645,11 +610,8 @@ public class Manage_Lamps extends AppCompatActivity {
                 l3.setBackgroundColor(Color.parseColor(hexResutlt));
                 lG.setBackgroundColor(Color.parseColor(hexResutlt));
                 break;
-
         }
     }
-
-
 
     /**
      * @param H : 0-360
@@ -733,20 +695,15 @@ public class Manage_Lamps extends AppCompatActivity {
         isConnected2 = false;
         isConnected3 = false;
 
-        Log.d("JONATHAN", "Send Message");
         if(isConnected1){
-            Log.d("JONATHAN", "1 CONNECTE");
-            cloudManager.publishWithinTopic(cloudManager.topic1, createMessage(lamp1_isOn,progressH1, progressS1, progressB1));
-        }
-
-        if (isConnected2){
-
-            cloudManager.publishWithinTopic(cloudManager.topic2, createMessage(lamp2_isOn,progressH2, progressS2, progressB2));
-        }
-
-        if (isConnected3){
-            Log.d("JONATHAN", "3 CONNECTE");
-            cloudManager.publishWithinTopic(cloudManager.topic3, createMessage(lamp3_isOn,progressH3, progressS3, progressB3));
+            String dataToSend = createMessage(lamp1_isOn,progressH1, progressS1, progressB1);
+            cloudManager.publishWithinTopic(cloudManager.topic1, dataToSend);
+        } if (isConnected2){
+            String dataToSend = createMessage(lamp2_isOn,progressH2, progressS2, progressB2);
+            cloudManager.publishWithinTopic(cloudManager.topic2, dataToSend);
+        } if (isConnected3){
+            String dataToSend = createMessage(lamp3_isOn,progressH3, progressS3, progressB3);
+            cloudManager.publishWithinTopic(cloudManager.topic3, dataToSend);
         }
     }
 
@@ -756,13 +713,13 @@ public class Manage_Lamps extends AppCompatActivity {
      * int H, S, B
      * boolean connected
      */
-    public String createMessage(boolean connected, int h, int s, int b ){
+    public String createMessage(boolean isConnected, int h, int s, int b ){
         h = h * 65535 / 360; // hue runs from 0 to 65535
         s = s * 255/100;
         b = b * 255/100;
 
         String connectedToString;
-        if (connected){
+        if (isConnected){
             connectedToString = "true";
         } else {
             connectedToString = "false";
@@ -771,4 +728,28 @@ public class Manage_Lamps extends AppCompatActivity {
         String msg ="{\"on\":" + connectedToString + ", \"sat\":" + s + ", \"bri\":" + b + ", \"hue\":" + h + "}";
         return msg;
     }
+
+
+
+    /**
+        -------------
+        MqttCallBack
+        -------------
+     **/
+
+    @Override
+    public void connectionLost(Throwable cause) {
+        Toast.makeText(this,"Connection Lost", Toast.LENGTH_LONG);
+    }
+
+    @Override
+    public void messageArrived(String topic, MqttMessage message) throws Exception {
+
+    }
+
+    @Override
+    public void deliveryComplete(IMqttDeliveryToken token) {
+        Toast.makeText(this,"delivery Complete", Toast.LENGTH_LONG);
+    }
 }
+
