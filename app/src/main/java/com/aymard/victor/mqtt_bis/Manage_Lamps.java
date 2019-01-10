@@ -3,6 +3,7 @@ package com.aymard.victor.mqtt_bis;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -11,12 +12,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 /**
  * Created by Adrien LEBRET on 29.12.2018.
@@ -37,15 +34,16 @@ public class Manage_Lamps extends AppCompatActivity {
     int progressS1, progressS2, progressS3, progressSG = 100;
     int progressB1, progressB2, progressB3, progressBG = 100;
     boolean lamp1_isOn, lamp2_isOn, lamp3_isOn = true;
-    boolean isConnected1, isConnected2, isConnected3 = true;
+    boolean isConnected1, isConnected2, isConnected3;
 
 
     MQTTManager cloudManager = null;
+    HandlerThread thread;
     Handler handler;
     int delay; //milliseconds
 
     String clientId = MqttClient.generateClientId();
-    private String urlServer = "tcp://m23.cloudmqtt.com:10980";
+    private String urlServer = "tcp://m20.cloudmqtt.com:19003";
 
     // LAMP 1
     LinearLayout l1;
@@ -83,7 +81,7 @@ public class Manage_Lamps extends AppCompatActivity {
         initialize();
 
         cloudManager = new MQTTManager(this, urlServer, clientId);
-        cloudManager.setCallback(new MqttCallback() {
+        /*cloudManager.setCallback(new MqttCallback() {
             @Override
             public void connectionLost(Throwable cause) {
 
@@ -98,20 +96,20 @@ public class Manage_Lamps extends AppCompatActivity {
             public void deliveryComplete(IMqttDeliveryToken token) {
 
             }
-        });
+        });*/
 
-        handler = new Handler();
-        delay = 2000;
+        thread = new HandlerThread("NewThread", Thread.MIN_PRIORITY);
+        thread.start();
+
+        handler = new Handler(thread.getLooper());
+        delay = 1000;
+
         handler.postDelayed(new Runnable(){
             public void run(){
-                Log.d("Daniel", "culcul");
                 sendAllMessages();
                 handler.postDelayed(this, delay);
             }
         }, delay);
-
-        //mToastRunnable.run();
-
     }
 
     /**
@@ -731,6 +729,10 @@ public class Manage_Lamps extends AppCompatActivity {
 
     public void sendAllMessages(){
 
+        isConnected1 = true;
+        isConnected2 = false;
+        isConnected3 = false;
+
         Log.d("JONATHAN", "Send Message");
         if(isConnected1){
             Log.d("JONATHAN", "1 CONNECTE");
@@ -739,12 +741,12 @@ public class Manage_Lamps extends AppCompatActivity {
 
         if (isConnected2){
 
-            cloudManager.publishWithinTopic(cloudManager.topic1, createMessage(lamp2_isOn,progressH2, progressS2, progressB2));
+            cloudManager.publishWithinTopic(cloudManager.topic2, createMessage(lamp2_isOn,progressH2, progressS2, progressB2));
         }
 
         if (isConnected3){
             Log.d("JONATHAN", "3 CONNECTE");
-            cloudManager.publishWithinTopic(cloudManager.topic1, createMessage(lamp3_isOn,progressH3, progressS3, progressB3));
+            cloudManager.publishWithinTopic(cloudManager.topic3, createMessage(lamp3_isOn,progressH3, progressS3, progressB3));
         }
     }
 
@@ -755,7 +757,10 @@ public class Manage_Lamps extends AppCompatActivity {
      * boolean connected
      */
     public String createMessage(boolean connected, int h, int s, int b ){
-        int y = h * 65535 / 360; // hue runs from 0 to 65535
+        h = h * 65535 / 360; // hue runs from 0 to 65535
+        s = s * 255/100;
+        b = b * 255/100;
+
         String connectedToString;
         if (connected){
             connectedToString = "true";
@@ -763,7 +768,7 @@ public class Manage_Lamps extends AppCompatActivity {
             connectedToString = "false";
         }
         // Le message doit contenir les guillemets Attention !
-        String msg ="{'on':" + connectedToString + ", 'sat':" + s + ", 'bri':" + b + ", 'hue':" + y + "}";
+        String msg ="{\"on\":" + connectedToString + ", \"sat\":" + s + ", \"bri\":" + b + ", \"hue\":" + h + "}";
         return msg;
     }
 }

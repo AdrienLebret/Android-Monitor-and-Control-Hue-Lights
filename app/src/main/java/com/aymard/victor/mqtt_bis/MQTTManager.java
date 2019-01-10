@@ -5,10 +5,7 @@ import android.widget.Toast;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
-import org.eclipse.paho.client.mqttv3.MqttCallback;
-import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -22,8 +19,8 @@ public class MQTTManager extends MqttAndroidClient {
 
     //MqttAndroidClient client;
 
-    private String userName = "fwrpsmyo";
-    private String password = "TFyMjVunjGCM";
+    private String userName = "bdnsrfca";
+    private String password = "cfL0e0aBHBx8";
 
     public String topic1 = "lamp/lamp1";
     public String topic2 = "lamp/lamp2";
