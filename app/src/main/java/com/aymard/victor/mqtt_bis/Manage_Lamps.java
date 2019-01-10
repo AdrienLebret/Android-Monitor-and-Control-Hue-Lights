@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -41,7 +42,7 @@ public class Manage_Lamps extends AppCompatActivity {
     int progressS1, progressS2, progressS3, progressSG = 100;
     int progressB1, progressB2, progressB3, progressBG = 100;
     boolean switch1, switch2, switch3 = true;
-    boolean isConnected1, isConnected2, isConnected3 = false;
+    boolean isConnected1, isConnected2, isConnected3 = true;
 
     MQTTManager cloudManager = null;
 
@@ -53,18 +54,21 @@ public class Manage_Lamps extends AppCompatActivity {
     SeekBar sbH1, sbS1, sbB1;
     TextView hue1, sat1, bri1;
     Button btn1;
+    ImageView rect1A, rect1B;
 
     // LAMP 2
     LinearLayout l2;
     SeekBar sbH2, sbS2, sbB2;
     TextView hue2, sat2, bri2;
     Button btn2;
+    ImageView rect2A, rect2B;
 
     // LAMP 3
     LinearLayout l3;
     SeekBar sbH3, sbS3, sbB3;
     TextView hue3, sat3, bri3;
     Button btn3;
+    ImageView rect3A, rect3B;
 
     // LAMP G
     LinearLayout lG;
@@ -117,6 +121,9 @@ public class Manage_Lamps extends AppCompatActivity {
         // LAMP 1
         //========
 
+        rect1A = (ImageView) findViewById(R.id.rect1A);
+        rect1B =(ImageView) findViewById(R.id.rect1B);
+
         l1 = (LinearLayout) findViewById(R.id.l1);
         //l1.setBackgroundColor(Color.parseColor("#b71a51")); //
 
@@ -131,9 +138,13 @@ public class Manage_Lamps extends AppCompatActivity {
                 if (btn1.getText().equals("LAMP1: ON")){
                     btn1.setText("LAMP1: OFF");
                     switch1 = false;
+                    rect1A.setVisibility(View.INVISIBLE);
+                    rect1B.setVisibility(View.VISIBLE);
                  }else{
                     btn1.setText("LAMP1: ON");
                     switch1 = true;
+                    rect1A.setVisibility(View.VISIBLE);
+                    rect1B.setVisibility(View.INVISIBLE);
                     changeBackgroundColor(1, progressH1, progressS1, progressB1);
                 }
             }
@@ -224,6 +235,10 @@ public class Manage_Lamps extends AppCompatActivity {
         //========
         // LAMP 2
         //========
+
+        rect2A = (ImageView) findViewById(R.id.rect2A);
+        rect2B = (ImageView) findViewById(R.id.rect2B);
+
         l2 = (LinearLayout) findViewById(R.id.l2);
         //l1.setBackgroundColor(Color.parseColor("#b71a51")); //
 
@@ -330,6 +345,9 @@ public class Manage_Lamps extends AppCompatActivity {
         //========
         // LAMP 3
         //========
+
+        rect3A = (ImageView) findViewById(R.id.rect3A);
+        rect3B = (ImageView) findViewById(R.id.rect3B);
 
         l3 = (LinearLayout) findViewById(R.id.l3);
         //l1.setBackgroundColor(Color.parseColor("#b71a51")); //
@@ -711,33 +729,44 @@ public class Manage_Lamps extends AppCompatActivity {
         public void run() {
             Log.d("JONATHAN", "ON EST DANS LE RUN");
             sendMessage();
+            Log.d("JONATHAN", "MESSAGE ENVOYE");
             mHandler.postDelayed(this, 1000);
         }
     };
 
     public void sendMessage(){
-
-
-        if(isConnected1) {
-
-
+        isConnected1 = true;
+        Log.d("JONATHAN", "Send Message");
+        if(isConnected1){
+            Log.d("JONATHAN", "1 CONNECTE");
         }
+
         if (isConnected2){
-
+            Log.d("JONATHAN", "2 CONNECTE");
         }
-        if (isConnected3){
 
+        if (isConnected3){
+            Log.d("JONATHAN", "3 CONNECTE");
         }
     }
 
     /**
      * Method of creation the JSON / String
+     * Ex : {"on":true, "sat":254, "bri":254,"hue":10000}
+     * int H, S, B
+     * boolean connected
      */
-    public String createMessage(){
-        String msg ="";
-
+    public String createMessage(boolean connected, int h, int s, int b ){
+        int y = h * 65535 / 360; // hue runs from 0 to 65535
+        String bool;
+        if (connected){
+            bool = "true";
+        } else {
+            bool = "false";
+        }
+        // Le message doit contenir les guillemets Attention !
+        String msg ="{on:" + bool + ", sat:" + s + ", bri:" + b + ", hue:" + y + "}";
         return msg;
-
     }
 
 
