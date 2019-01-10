@@ -33,8 +33,8 @@ public class MainActivity extends AppCompatActivity {
             new MqttAndroidClient(MainActivity.this, "tcp://m23.cloudmqtt.com:10980",
                     clientId);
 
-    String topic = "foo/bar";
-    int qos = 1;
+    String topic = "lamp/#";
+    int qos = 2;
 
 
     @Override
@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         btn1 = (Button) findViewById(R.id.btn1);
         btn2 = (Button) findViewById(R.id.btn2);
 
+        startActivity(new Intent(MainActivity.this, Manage_Lamps.class));
 
 
 
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
 
-                startActivity(new Intent(MainActivity.this, Manage_Lamps.class));
+                //startActivity(new Intent(MainActivity.this, Manage_Lamps.class));
 
                 // TUTO 2
 /*
@@ -123,8 +124,8 @@ public class MainActivity extends AppCompatActivity {
         btn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String topic = "foo/bar";
-                String payload = "the payload";
+                String topic = "lamp/#"; // ------------------------------------------------ mettre le nom du du topic
+                String payload = "the payload"; // ------------------------------------------ mettre le message
                 byte[] encodedPayload = new byte[0];
                 try {
                     encodedPayload = payload.getBytes("UTF-8");

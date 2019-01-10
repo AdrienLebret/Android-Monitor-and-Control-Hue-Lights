@@ -12,6 +12,16 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+
+import java.io.UnsupportedEncodingException;
+
 /**
  * Created by Adrien LEBRET on 29.12.2018.
  * activité permettant les interactions bluetooth
@@ -32,6 +42,11 @@ public class Manage_Lamps extends AppCompatActivity {
     int progressB1, progressB2, progressB3, progressBG = 100;
     boolean switch1, switch2, switch3 = true;
     boolean isConnected1, isConnected2, isConnected3 = false;
+
+    MQTTManager cloudManager = null;
+
+    String clientId = MqttClient.generateClientId();
+    private String urlServer = "tcp://m23.cloudmqtt.com:10980";
 
     // LAMP 1
     LinearLayout l1;
@@ -66,6 +81,24 @@ public class Manage_Lamps extends AppCompatActivity {
         mToastRunnable.run();
         Log.d("JONATHAN", "RUN APPELé");
         initialize();
+
+        cloudManager = new MQTTManager(this, urlServer, clientId);
+        cloudManager.setCallback(new MqttCallback() {
+            @Override
+            public void connectionLost(Throwable cause) {
+
+            }
+
+            @Override
+            public void messageArrived(String topic, MqttMessage message) throws Exception {
+                Toast.makeText(Manage_Lamps.this, new String(message.getPayload()), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void deliveryComplete(IMqttDeliveryToken token) {
+
+            }
+        });
 
     }
 
@@ -683,7 +716,10 @@ public class Manage_Lamps extends AppCompatActivity {
     };
 
     public void sendMessage(){
-        if(isConnected1){
+
+
+        if(isConnected1) {
+
 
         }
         if (isConnected2){
