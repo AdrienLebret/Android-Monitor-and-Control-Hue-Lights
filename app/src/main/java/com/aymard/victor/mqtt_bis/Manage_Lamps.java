@@ -1,9 +1,9 @@
 package com.aymard.victor.mqtt_bis;
 
 import android.graphics.Color;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -41,6 +41,8 @@ public class Manage_Lamps extends AppCompatActivity {
 
 
     MQTTManager cloudManager = null;
+    Handler handler;
+    int delay; //milliseconds
 
     String clientId = MqttClient.generateClientId();
     private String urlServer = "tcp://m23.cloudmqtt.com:10980";
@@ -78,8 +80,6 @@ public class Manage_Lamps extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage__lamps);
-        mToastRunnable.run();
-        Log.d("JONATHAN", "RUN APPELé");
         initialize();
 
         cloudManager = new MQTTManager(this, urlServer, clientId);
@@ -99,6 +99,18 @@ public class Manage_Lamps extends AppCompatActivity {
 
             }
         });
+
+        handler = new Handler();
+        delay = 2000;
+        handler.postDelayed(new Runnable(){
+            public void run(){
+                Log.d("Daniel", "culcul");
+                sendAllMessages();
+                handler.postDelayed(this, delay);
+            }
+        }, delay);
+
+        //mToastRunnable.run();
 
     }
 
@@ -143,6 +155,8 @@ public class Manage_Lamps extends AppCompatActivity {
                     rect1B.setVisibility(View.INVISIBLE);
                     changeBackgroundColor(1, progressH1, progressS1, progressB1);
                 }
+
+                cloudManager.publishWithinTopic(cloudManager.topic1, "mon cul");
             }
         });
 
@@ -714,21 +728,6 @@ public class Manage_Lamps extends AppCompatActivity {
             bs = "0" + bs;
         return "#" + rs + gs + bs;
     }
-
-
-    /**
-     * Method that will send every second a message to the CLOUD
-     */
-
-    private Runnable mToastRunnable = new Runnable() {
-        @Override
-        public void run() {
-            Log.d("JONATHAN", "ON EST DANS LE RUN");
-            sendAllMessages();
-            Log.d("JONATHAN", "MESSAGE ENVOYE");
-            mHandler.postDelayed(this, 1000);
-        }
-    };
 
     public void sendAllMessages(){
 
