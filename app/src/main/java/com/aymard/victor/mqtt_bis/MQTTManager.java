@@ -7,6 +7,7 @@ import android.widget.Toast;
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -18,20 +19,27 @@ import java.io.UnsupportedEncodingException;
  */
 public class MQTTManager extends MqttAndroidClient {
 
-    private String userName = "bdnsrfca";
-    private String password = "cfL0e0aBHBx8";
+//    private static final String SERVER_URI = "tcp://m20.cloudmqtt.com:19003";
+//    private static final String USERNAME = "bdnsrfca";
+//    private static final String PASSWORD = "cfL0e0aBHBx8";
+    private static final String CLIENT_ID = MqttClient.generateClientId();
+
+    private static final String SERVER_URI = "tcp://m15.cloudmqtt.com:11260";
+    private static final String USERNAME = "reeixoch";
+    private static final String PASSWORD = "qO0Llhkf4KVK";
 
     private String topic1 = "lamp/lamp1";
     private String topic2 = "lamp/lamp2";
     private String topic3 = "lamp/lamp3";
-    private String topicGeneral = "lamp/#";
+    private String topicInfos = "lamp/lampsInfo";
+    private String allTopics = "lamp/#";
 
     int qos = 1;
 
     /* CONSTRUCTOR */
 
-    public MQTTManager(Context content, String serverURI, String clientId) {
-        super(content, serverURI, clientId);
+    public MQTTManager(Context content) {
+        super(content, SERVER_URI, CLIENT_ID);
 
         this.subscribeInstance(content);
     }
@@ -50,7 +58,16 @@ public class MQTTManager extends MqttAndroidClient {
             encodedPayload = dataStr.getBytes("UTF-8");
             MqttMessage message = new MqttMessage(encodedPayload);
             publish(topicName, message);
-            Log.d("Send Message tag", dataStr);
+
+            // DEBUG CODE
+            if (topicName == topic1) {
+                Log.d("Send Message topic1", dataStr);
+            } else if ( topicName == topic2) {
+                Log.d("Send Message topic2", dataStr);
+            } else if ( topicName == topic3) {
+                Log.d("Send Message topic3", dataStr);
+            }
+
         } catch (UnsupportedEncodingException | MqttException e) {
             e.printStackTrace();
         }
@@ -74,10 +91,8 @@ public class MQTTManager extends MqttAndroidClient {
             e.printStackTrace();
         }
 
-        options.setUserName(userName);
-        options.setPassword(password.toCharArray());
-
-
+        options.setUserName(USERNAME);
+        options.setPassword(PASSWORD.toCharArray());
 
         try {
             IMqttToken token = connect(options);
@@ -85,9 +100,7 @@ public class MQTTManager extends MqttAndroidClient {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     Toast.makeText(content, "We are connected", Toast.LENGTH_SHORT).show();
-                    subscribeTopic(getTopic1());
-                    subscribeTopic(getTopic2());
-                    subscribeTopic(getTopic3());
+                    subscribeTopic(getAllTopic());
                     Toast.makeText(content, "SUBCRIBE", Toast.LENGTH_SHORT).show();
 
                 }
@@ -130,5 +143,7 @@ public class MQTTManager extends MqttAndroidClient {
 
     public String getTopic3() { return topic3; }
 
-    public void setTopicGeneral(String topicGeneral) { this.topicGeneral = topicGeneral; }
+    public String getAllTopic() { return allTopics; }
+
+    public String getTopicInfos() { return topicInfos; }
 }

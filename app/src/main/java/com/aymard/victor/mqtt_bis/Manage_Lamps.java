@@ -3,6 +3,7 @@ package com.aymard.victor.mqtt_bis;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -16,6 +17,7 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -30,16 +32,13 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
     // INFORMATIONS THAT WE NEED FOR THE LAMPS
     //=========================================
 
-    int progressH1, progressH2, progressH3, progressHG = 360;
-    int progressS1, progressS2, progressS3, progressSG = 100;
-    int progressB1, progressB2, progressB3, progressBG = 100;
-    boolean lamp1_isOn, lamp2_isOn, lamp3_isOn = true;
+    int progressH1, progressH2, progressH3, progressHG;
+    int progressS1, progressS2, progressS3, progressSG;
+    int progressB1, progressB2, progressB3, progressBG;
+    boolean lamp1_isOn, lamp2_isOn, lamp3_isOn;
     boolean isConnected1, isConnected2, isConnected3;
 
     MQTTManager cloudManager;
-
-    private String clientId = MqttClient.generateClientId();
-    private String urlServer = "tcp://m20.cloudmqtt.com:19003";
 
     // LAMP 1
     LinearLayout l1;
@@ -73,9 +72,11 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage__lamps);
+
         initialize();
 
-        cloudManager = new MQTTManager(this, urlServer, clientId);
+        cloudManager = new MQTTManager(this);
+
         cloudManager.setCallback(this);
     }
 
@@ -89,7 +90,6 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
      */
     private void initialize() {
 
-
         //========
         // LAMP 1
         //========
@@ -101,22 +101,19 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
         //l1.setBackgroundColor(Color.parseColor("#b71a51")); //
 
         btn1 = findViewById(R.id.btn1);
+        btn1.setText("LAMP1: OFF");
         /**
          * ADD ACTION
          */
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (btn1.getText().equals("LAMP1: ON")){
+                if (lamp1_isOn){
                     btn1.setText("LAMP1: OFF");
                     lamp1_isOn = false;
-                    rect1A.setVisibility(View.INVISIBLE);
-                    rect1B.setVisibility(View.VISIBLE);
-                 }else{
+                 } else {
                     btn1.setText("LAMP1: ON");
                     lamp1_isOn = true;
-                    rect1A.setVisibility(View.VISIBLE);
-                    rect1B.setVisibility(View.INVISIBLE);
                     changeBackgroundColor(1, progressH1, progressS1, progressB1);
                 }
 
@@ -216,6 +213,7 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
         //l1.setBackgroundColor(Color.parseColor("#b71a51")); //
 
         btn2 = (Button) findViewById(R.id.btn2);
+        btn2.setText("LAMP2: OFF");
         /**
          * ADD ACTION
          */
@@ -223,7 +221,7 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
         btn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (btn2.getText().equals("LAMP2: ON")){
+                if (lamp2_isOn){
                     btn2.setText("LAMP2: OFF");
                     lamp2_isOn = false;
                 } else {
@@ -327,6 +325,7 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
         //l1.setBackgroundColor(Color.parseColor("#b71a51")); //
 
         btn3 = (Button) findViewById(R.id.btn3);
+        btn3.setText("LAMP3: OFF");
         /**
          * ADD ACTION
          */
@@ -334,7 +333,7 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
         btn3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (btn3.getText().equals("LAMP3: ON")){
+                if (lamp3_isOn){
                     btn3.setText("LAMP3: OFF");
                     lamp3_isOn = false;
                 } else {
@@ -436,6 +435,7 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
         //l1.setBackgroundColor(Color.parseColor("#b71a51")); //
 
         btnG = (Button) findViewById(R.id.btnG);
+        btnG.setText("LAMPS CO: OFF");
         /**
          * ADD ACTION
          */
@@ -444,8 +444,8 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
             @Override
             public void onClick(View v) {
                 changeBackgroundColor(4 ,progressHG, progressSG, progressBG);
-                if (btnG.getText().equals("LAMPS: ON")){
-                    btnG.setText("LAMPS: OFF");
+                if (btnG.getText().equals("LAMPS CO: ON")){
+                    btnG.setText("LAMPS CO: OFF");
                     btn1.setText("LAMP1: OFF");
                     btn2.setText("LAMP2: OFF");
                     btn3.setText("LAMP3: OFF");
@@ -453,7 +453,7 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
                     lamp2_isOn = false;
                     lamp3_isOn = false;
                 } else {
-                    btnG.setText("LAMPS: ON");
+                    btnG.setText("LAMPS CO: ON");
                     btn1.setText("LAMP1: ON");
                     btn2.setText("LAMP2: ON");
                     btn3.setText("LAMP3: ON");
@@ -691,8 +691,8 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
     public void sendAllMessages(){
 
         isConnected1 = true;
-        isConnected2 = false;
-        isConnected3 = false;
+        isConnected2 = true;
+        isConnected3 = true;
 
         if(isConnected1){
             String dataToSend = createMessage(lamp1_isOn,progressH1, progressS1, progressB1);
@@ -743,24 +743,91 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
 
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
-        JSONArray data = new JSONArray(message.toString());
 
-        if (isConnected1) {
-            JSONObject lampData = data.getJSONObject(0);
+        if (topic == cloudManager.getTopicInfos()) {
 
-        } if (isConnected2) {
-            JSONObject lampData = data.getJSONObject(1);
+            Log.d("mes : ", "yes");
+            Log.d("mes : ", message.toString());
 
-        } if (isConnected3) {
-            JSONObject lampData = data.getJSONObject(2);
+            JSONArray jsonData = new JSONArray(message.toString());
 
+            updateInterface(jsonData);
         }
-
     }
 
     @Override
     public void deliveryComplete(IMqttDeliveryToken token) {
         Toast.makeText(this,"delivery Complete", Toast.LENGTH_LONG);
+    }
+
+    private void updateInterface(JSONArray data) throws JSONException {
+        if (isConnected1) {
+            JSONObject lampData = data.getJSONObject(0);
+
+            Log.d("message", lampData.toString());
+
+            // Button1 update
+            if (lampData.getBoolean("on")) {
+                btn1.setText("LAMP1: ON");
+                lamp1_isOn = true;
+                changeBackgroundColor(1, progressH1, progressS1, progressB1);
+            } else {
+                btn1.setText("LAMP1: OFF");
+                lamp1_isOn = false;
+            }
+
+            // Sliders update
+            progressS1 = lampData.getInt("sat");
+            progressB1 = lampData.getInt("bri");
+            progressH1 = lampData.getInt("hue");
+
+            sbB1.setProgress(progressB1);
+            sbH1.setProgress(progressH1);
+            sbS1.setProgress(progressS1);
+
+        } if (isConnected2) {
+            JSONObject lampData = data.getJSONObject(1);
+
+            // Button2 update
+            if (lampData.getBoolean("on")) {
+                btn2.setText("LAMP1: ON");
+                lamp2_isOn = true;
+                changeBackgroundColor(1, progressH1, progressS1, progressB1);
+            } else {
+                btn2.setText("LAMP1: OFF");
+                lamp2_isOn = false;
+            }
+
+            // Sliders update
+            progressS2 = lampData.getInt("sat");
+            progressB2 = lampData.getInt("bri");
+            progressH2 = lampData.getInt("hue");
+
+            sbB2.setProgress(progressB2);
+            sbH2.setProgress(progressH2);
+            sbS2.setProgress(progressS2);
+        } if (isConnected3) {
+            JSONObject lampData = data.getJSONObject(2);
+
+            // Button3 update
+            if (lampData.getBoolean("on")) {
+                btn3.setText("LAMP1: ON");
+                lamp3_isOn = true;
+                changeBackgroundColor(1, progressH1, progressS1, progressB1);
+            } else {
+                btn3.setText("LAMP1: OFF");
+                lamp3_isOn = false;
+            }
+
+            // Sliders update
+            progressS3 = lampData.getInt("sat");
+            progressB3 = lampData.getInt("bri");
+            progressH3 = lampData.getInt("hue");
+
+            sbB3.setProgress(progressB3);
+            sbH3.setProgress(progressH3);
+            sbS3.setProgress(progressS3);
+        }
     }
 }
 
