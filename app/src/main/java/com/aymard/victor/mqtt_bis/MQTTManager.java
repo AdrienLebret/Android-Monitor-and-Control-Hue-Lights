@@ -15,23 +15,23 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import java.io.UnsupportedEncodingException;
 
 /**
- * Created by Victor AYMARD on 10.01.2019.
+ * Created by Daniel IKKA on 10.01.2019.
  */
 public class MQTTManager extends MqttAndroidClient {
 
-//    private static final String SERVER_URI = "tcp://m20.cloudmqtt.com:19003";
-//    private static final String USERNAME = "bdnsrfca";
-//    private static final String PASSWORD = "cfL0e0aBHBx8";
+    private static final String SERVER_URI = "tcp://m20.cloudmqtt.com:19003";
+    private static final String USERNAME = "bdnsrfca";
+    private static final String PASSWORD = "cfL0e0aBHBx8";
     private static final String CLIENT_ID = MqttClient.generateClientId();
 
-    private static final String SERVER_URI = "tcp://m15.cloudmqtt.com:11260";
-    private static final String USERNAME = "reeixoch";
-    private static final String PASSWORD = "qO0Llhkf4KVK";
+//    private static final String SERVER_URI = "tcp://m15.cloudmqtt.com:11260";
+//    private static final String USERNAME = "reeixoch";
+//    private static final String PASSWORD = "qO0Llhkf4KVK";
 
     private String topic1 = "lamp/lamp1";
     private String topic2 = "lamp/lamp2";
     private String topic3 = "lamp/lamp3";
-    private String topicInfos = "lamp/lampsInfo";
+    private String topicInfos = "lamp/out";
     private String allTopics = "lamp/#";
 
     int qos = 1;

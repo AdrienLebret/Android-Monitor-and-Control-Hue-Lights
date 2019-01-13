@@ -1,7 +1,12 @@
 package com.aymard.victor.mqtt_bis;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -12,9 +17,11 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aymard.victor.mqtt_bis.BLT.BluetoothController;
+import com.aymard.victor.mqtt_bis.BLT.BluetoothDiscoveryDeviceListener;
+
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
-import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,7 +33,7 @@ import org.json.JSONObject;
  * activation / désactivation / scan des appareils disponnibles
  */
 
-public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
+public class Manage_Lamps extends AppCompatActivity implements MqttCallback, BluetoothDiscoveryDeviceListener {
 
     //=========================================
     // INFORMATIONS THAT WE NEED FOR THE LAMPS
@@ -39,6 +46,7 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
     boolean isConnected1, isConnected2, isConnected3;
 
     MQTTManager cloudManager;
+    BluetoothController bleController;
 
     // LAMP 1
     LinearLayout l1;
@@ -76,8 +84,9 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
         initialize();
 
         cloudManager = new MQTTManager(this);
-
         cloudManager.setCallback(this);
+
+        BLEsetup();
     }
 
     /**
@@ -200,7 +209,7 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
             }
         });
 
-
+        changeBackgroundColor( 1 ,progressH1, progressS1, progressB1);
 
         //========
         // LAMP 2
@@ -313,6 +322,7 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
             }
         });
 
+        changeBackgroundColor(2 ,progressH2, progressS2, progressB2);
 
         //========
         // LAMP 3
@@ -426,6 +436,7 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
             }
         });
 
+        changeBackgroundColor(3 ,progressH3, progressS3, progressB3);
 
         //========
         // LAMP G
@@ -579,8 +590,47 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
                 sendAllMessages();
             }
         });
+        changeBackgroundColor(4 ,progressHG, progressSG, progressBG);
+
     }
 
+    private void BLEsetup() {
+        // [#11] Ensures that the Bluetooth is available on this device before proceeding.
+        boolean hasBluetooth = getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH);
+        if(!hasBluetooth) {
+            AlertDialog dialog = new AlertDialog.Builder(Manage_Lamps.this).create();
+            dialog.setTitle("Problem with BLE");
+            dialog.setMessage("BLE is not available");
+            dialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Closes the dialog and terminates the activity.
+                            dialog.dismiss();
+                        }
+                    });
+            dialog.setCancelable(false);
+            dialog.show();
+        } else {
+            // Sets up the bluetooth controller.
+            this.bleController = new BluetoothController(this, BluetoothAdapter.getDefaultAdapter(), this);
+        }
+
+        // If the bluetooth is not enabled, turns it on.
+        if (!bleController.isBluetoothEnabled()) {
+            Toast.makeText(this, "BLE is enabling", Toast.LENGTH_SHORT).show();
+            bleController.turnOnBluetoothAndScheduleDiscovery();
+        } else {
+            //Prevents the user from spamming the button and thus glitching the UI.
+            if (!bleController.isDiscovering()) {
+                // Starts the discovery.
+                Toast.makeText(this, "device discovery started", Toast.LENGTH_SHORT).show();
+                bleController.startDiscovery();
+            } else {
+                Toast.makeText(this, "device discovery stopped", Toast.LENGTH_SHORT).show();
+                bleController.cancelDiscovery();
+            }
+        }
+    }
     private void changeBackgroundColor(int lamp,int hue, int saturation, int brightness) {
 
         String hexResutlt = hsvToRGB(hue,saturation,brightness);
@@ -744,7 +794,10 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
 
-        if (topic == cloudManager.getTopicInfos()) {
+
+        Log.d("mes : ", "From: " + topic + " " + message.toString());
+
+        if (topic == "lamp/out") {
 
             Log.d("mes : ", "yes");
             Log.d("mes : ", message.toString());
@@ -828,6 +881,49 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
             sbH3.setProgress(progressH3);
             sbS3.setProgress(progressS3);
         }
+    }
+
+
+    /**
+     --------------------------------
+     BluetoothDiscoveryDeviceListener
+     --------------------------------
+     **/
+
+    @Override
+    public void onDeviceDiscovered(BluetoothDevice device) {
+        Log.d("BLE DISCOVER :", device.getName() + ": "+ device.getAddress());
+    }
+
+    @Override
+    public void onDeviceDiscoveryStarted() {
+        Log.d("Debug BLE", "onDeviceDiscoveryStarted");
+    }
+
+    @Override
+    public void setBluetoothController(BluetoothController bluetooth) {
+
+    }
+
+    @Override
+    public void onDeviceDiscoveryEnd() {
+        Log.d("Debug BLE", "onDeviceDiscoveryEnd");
+        bleController.turnOnBluetoothAndScheduleDiscovery();
+    }
+
+    @Override
+    public void onBluetoothStatusChanged() {
+
+    }
+
+    @Override
+    public void onBluetoothTurningOn() {
+
+    }
+
+    @Override
+    public void onDevicePairingEnded() {
+
     }
 }
 
