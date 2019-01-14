@@ -19,14 +19,14 @@ import java.io.UnsupportedEncodingException;
  */
 public class MQTTManager extends MqttAndroidClient {
 
-    private static final String SERVER_URI = "tcp://m20.cloudmqtt.com:19003";
-    private static final String USERNAME = "bdnsrfca";
-    private static final String PASSWORD = "cfL0e0aBHBx8";
+//    private static final String SERVER_URI = "tcp://m20.cloudmqtt.com:19003";
+//    private static final String USERNAME = "bdnsrfca";
+//    private static final String PASSWORD = "cfL0e0aBHBx8";
     private static final String CLIENT_ID = MqttClient.generateClientId();
 
-//    private static final String SERVER_URI = "tcp://m15.cloudmqtt.com:11260";
-//    private static final String USERNAME = "reeixoch";
-//    private static final String PASSWORD = "qO0Llhkf4KVK";
+    private static final String SERVER_URI = "tcp://m15.cloudmqtt.com:11260";
+    private static final String USERNAME = "reeixoch";
+    private static final String PASSWORD = "qO0Llhkf4KVK";
 
     private String topic1 = "lamp/lamp1";
     private String topic2 = "lamp/lamp2";

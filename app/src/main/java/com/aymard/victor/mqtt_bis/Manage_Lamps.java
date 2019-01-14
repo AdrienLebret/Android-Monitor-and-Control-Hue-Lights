@@ -1,24 +1,28 @@
 package com.aymard.victor.mqtt_bis;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.DialogInterface;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.aymard.victor.mqtt_bis.BLT.BluetoothController;
-import com.aymard.victor.mqtt_bis.BLT.BluetoothDiscoveryDeviceListener;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -33,11 +37,14 @@ import org.json.JSONObject;
  * activation / désactivation / scan des appareils disponnibles
  */
 
-public class Manage_Lamps extends AppCompatActivity implements MqttCallback, BluetoothDiscoveryDeviceListener {
+public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
 
     //=========================================
     // INFORMATIONS THAT WE NEED FOR THE LAMPS
     //=========================================
+
+    public static final int REQUEST_ACCES_COARSE_LOCATION = 1;
+    public static final int REQUEST_ENABLE_BLUETOOTH = 11;
 
     int progressH1, progressH2, progressH3, progressHG;
     int progressS1, progressS2, progressS3, progressSG;
@@ -46,7 +53,8 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback, Blu
     boolean isConnected1, isConnected2, isConnected3;
 
     MQTTManager cloudManager;
-    BluetoothController bleController;
+    private BluetoothAdapter bluetoothAdapter;
+    private ArrayAdapter<String> listAdapter;
 
     // LAMP 1
     LinearLayout l1;
@@ -86,7 +94,38 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback, Blu
         cloudManager = new MQTTManager(this);
         cloudManager.setCallback(this);
 
-        BLEsetup();
+        setupBLE();
+    }
+
+    private void setupBLE() {
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        // we create a simple array adapter to display devices detected
+        listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1);
+
+        //we check bluetooth state
+        checkBluetoothState();
+
+        // Turn on BLE
+        if (!bluetoothAdapter.isEnabled()) {
+            Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(intent, REQUEST_ENABLE_BLUETOOTH);
+            // mBlueIv.setImageResource(R.drawable.ic_action_on);
+        } else {
+            showToast("Bluetooth is already on");
+        }
+
+        //Start scanning
+        if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
+            // we check if coarse location must be asked
+            if (checkCoarseLocationPermission()) {
+                Log.d("Salope", "Je passe");
+                listAdapter.clear();
+                bluetoothAdapter.startDiscovery();
+            }
+        } else {
+            checkBluetoothState();
+        }
     }
 
     /**
@@ -591,45 +630,6 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback, Blu
             }
         });
         changeBackgroundColor(4 ,progressHG, progressSG, progressBG);
-
-    }
-
-    private void BLEsetup() {
-        // [#11] Ensures that the Bluetooth is available on this device before proceeding.
-        boolean hasBluetooth = getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH);
-        if(!hasBluetooth) {
-            AlertDialog dialog = new AlertDialog.Builder(Manage_Lamps.this).create();
-            dialog.setTitle("Problem with BLE");
-            dialog.setMessage("BLE is not available");
-            dialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            // Closes the dialog and terminates the activity.
-                            dialog.dismiss();
-                        }
-                    });
-            dialog.setCancelable(false);
-            dialog.show();
-        } else {
-            // Sets up the bluetooth controller.
-            this.bleController = new BluetoothController(this, BluetoothAdapter.getDefaultAdapter(), this);
-        }
-
-        // If the bluetooth is not enabled, turns it on.
-        if (!bleController.isBluetoothEnabled()) {
-            Toast.makeText(this, "BLE is enabling", Toast.LENGTH_SHORT).show();
-            bleController.turnOnBluetoothAndScheduleDiscovery();
-        } else {
-            //Prevents the user from spamming the button and thus glitching the UI.
-            if (!bleController.isDiscovering()) {
-                // Starts the discovery.
-                Toast.makeText(this, "device discovery started", Toast.LENGTH_SHORT).show();
-                bleController.startDiscovery();
-            } else {
-                Toast.makeText(this, "device discovery stopped", Toast.LENGTH_SHORT).show();
-                bleController.cancelDiscovery();
-            }
-        }
     }
     private void changeBackgroundColor(int lamp,int hue, int saturation, int brightness) {
 
@@ -883,47 +883,95 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback, Blu
         }
     }
 
-
-    /**
-     --------------------------------
-     BluetoothDiscoveryDeviceListener
-     --------------------------------
-     **/
+    /** ----------------
+     *    Function BLE
+        ---------------- **/
 
     @Override
-    public void onDeviceDiscovered(BluetoothDevice device) {
-        Log.d("BLE DISCOVER :", device.getName() + ": "+ device.getAddress());
+    protected void onResume() {
+        super.onResume();
+        //we register a dedicated receiver for some Bluetooth actions
+        registerReceiver(devicesFoundReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
+        registerReceiver(devicesFoundReceiver, new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_STARTED));
+        registerReceiver(devicesFoundReceiver, new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED));
     }
 
     @Override
-    public void onDeviceDiscoveryStarted() {
-        Log.d("Debug BLE", "onDeviceDiscoveryStarted");
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(devicesFoundReceiver);
     }
 
     @Override
-    public void setBluetoothController(BluetoothController bluetooth) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+        if (requestCode == REQUEST_ENABLE_BLUETOOTH) {
+            checkBluetoothState();
+        }
     }
 
-    @Override
-    public void onDeviceDiscoveryEnd() {
-        Log.d("Debug BLE", "onDeviceDiscoveryEnd");
-        bleController.turnOnBluetoothAndScheduleDiscovery();
+    public String PCVictorAdresse = "44:85:00:19:CE:5D";
+    public String IphoneDAdresse = "F0:98:9D:12:46:64";
+
+
+    // we need to implement our revceiver to get devices detected       // config de ce qui est lu ------------------------
+    private final BroadcastReceiver devicesFoundReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+
+
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+                if (PCVictorAdresse.equals(device.getAddress())) {
+                    showToast("Lamp 1 is detected !");
+                    Log.d("BLE : ", "lamp 1");
+                    isConnected1 = true;
+                }
+                if (IphoneDAdresse.equals(device.getAddress())) {
+                    showToast("Lamp 2 is detected !");
+                    Log.d("BLE : ", "lamp 2");
+                    isConnected2 = true;
+                }
+            }
+        }
+    };
+
+    private void checkBluetoothState() {
+        if (bluetoothAdapter == null) {
+            Toast.makeText(this, "Bluetooth is not supported on your device !", Toast.LENGTH_SHORT).show();
+        } else {
+            if (bluetoothAdapter.isEnabled()) {
+                if (bluetoothAdapter.isDiscovering()) {
+                    Toast.makeText(this, "Device discovering process ...", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Bluetooth is activated", Toast.LENGTH_SHORT).show();
+                }
+                //  mBlueIv.setImageResource(R.drawable.ic_action_on);
+            } else {
+                Toast.makeText(this, "You need to activate Bluetooth", Toast.LENGTH_SHORT).show();
+                //Intent enableIntent = new Intent (BluetoothAdapter.ACTION_REQUEST_ENABLE); //on peut mettre ces lignes pour que lorsque l'on clique sur le btn recherche il active automatiquement le bluetooth et lance la recherche
+                //startActivityForResult(enableIntent, REQUEST_ENABLE_BLUETOOTH);
+            }
+        }
     }
 
-    @Override
-    public void onBluetoothStatusChanged() {
-
+    private boolean checkCoarseLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    REQUEST_ACCES_COARSE_LOCATION);
+            return false;
+        } else {
+            return true;
+        }
     }
 
-    @Override
-    public void onBluetoothTurningOn() {
-
-    }
-
-    @Override
-    public void onDevicePairingEnded() {
-
+    //toast message function
+    private void showToast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 }
 
