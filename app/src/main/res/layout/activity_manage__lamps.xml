@@ -23,7 +23,7 @@
             <LinearLayout
                 android:id="@+id/l1"
                 android:layout_width="155dp"
-                android:layout_height="242dp"
+                android:layout_height="200dp"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -50,10 +50,10 @@
                     android:id="@+id/sbH1"
                     style="@style/Widget.AppCompat.SeekBar.Discrete"
                     android:layout_width="130dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="20dp"
                     android:max="360"
-                    android:progress="1"
-                    android:padding="7dp"/>
+                    android:padding="7dp"
+                    android:progress="1" />
 
                 <TextView
                     android:id="@+id/hue1"
@@ -65,10 +65,10 @@
                     android:id="@+id/sbS1"
                     style="@style/Widget.AppCompat.SeekBar.Discrete"
                     android:layout_width="130dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="20dp"
                     android:max="360"
-                    android:progress="1"
-                    android:padding="7dp"/>
+                    android:padding="7dp"
+                    android:progress="1" />
 
                 <TextView
                     android:id="@+id/sat1"
@@ -80,10 +80,10 @@
                     android:id="@+id/sbB1"
                     style="@style/Widget.AppCompat.SeekBar.Discrete"
                     android:layout_width="130dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="20dp"
                     android:max="360"
-                    android:progress="1"
-                    android:padding="7dp"/>
+                    android:padding="7dp"
+                    android:progress="1" />
 
                 <TextView
                     android:id="@+id/bri1"
@@ -94,7 +94,7 @@
                 <Button
                     android:id="@+id/btn1"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="43dp"
                     android:text="LAMP1: ON" />
 
 
@@ -108,7 +108,7 @@
             <LinearLayout
                 android:id="@+id/l2"
                 android:layout_width="155dp"
-                android:layout_height="242dp"
+                android:layout_height="200dp"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -135,10 +135,10 @@
                     android:id="@+id/sbH2"
                     style="@style/Widget.AppCompat.SeekBar.Discrete"
                     android:layout_width="130dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="20dp"
                     android:max="360"
-                    android:progress="1"
-                    android:padding="7dp"/>
+                    android:padding="7dp"
+                    android:progress="1" />
 
                 <TextView
                     android:id="@+id/hue2"
@@ -150,10 +150,10 @@
                     android:id="@+id/sbS2"
                     style="@style/Widget.AppCompat.SeekBar.Discrete"
                     android:layout_width="130dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="20dp"
                     android:max="360"
-                    android:progress="1"
-                    android:padding="7dp"/>
+                    android:padding="7dp"
+                    android:progress="1" />
 
                 <TextView
                     android:id="@+id/sat2"
@@ -165,10 +165,10 @@
                     android:id="@+id/sbB2"
                     style="@style/Widget.AppCompat.SeekBar.Discrete"
                     android:layout_width="130dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="20dp"
                     android:max="360"
-                    android:progress="1"
-                    android:padding="7dp"/>
+                    android:padding="7dp"
+                    android:progress="1" />
 
                 <TextView
                     android:id="@+id/bri2"
@@ -179,7 +179,7 @@
                 <Button
                     android:id="@+id/btn2"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="43dp"
                     android:text="LAMP2: ON" />
 
 
@@ -202,7 +202,7 @@
             <LinearLayout
                 android:id="@+id/l3"
                 android:layout_width="155dp"
-                android:layout_height="242dp"
+                android:layout_height="200dp"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -229,10 +229,10 @@
                     android:id="@+id/sbH3"
                     style="@style/Widget.AppCompat.SeekBar.Discrete"
                     android:layout_width="130dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="20dp"
                     android:max="360"
-                    android:progress="1"
-                    android:padding="7dp"/>
+                    android:padding="7dp"
+                    android:progress="1" />
 
                 <TextView
                     android:id="@+id/hue3"
@@ -244,10 +244,10 @@
                     android:id="@+id/sbS3"
                     style="@style/Widget.AppCompat.SeekBar.Discrete"
                     android:layout_width="130dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="20dp"
                     android:max="360"
-                    android:progress="1"
-                    android:padding="7dp" />
+                    android:padding="7dp"
+                    android:progress="1" />
 
                 <TextView
                     android:id="@+id/sat3"
@@ -259,10 +259,10 @@
                     android:id="@+id/sbB3"
                     style="@style/Widget.AppCompat.SeekBar.Discrete"
                     android:layout_width="130dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="20dp"
                     android:max="360"
-                    android:progress="1"
-                    android:padding="7dp"/>
+                    android:padding="7dp"
+                    android:progress="1" />
 
                 <TextView
                     android:id="@+id/bri3"
@@ -273,7 +273,7 @@
                 <Button
                     android:id="@+id/btn3"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="43dp"
                     android:text="LAMP3: ON" />
 
 
@@ -287,7 +287,7 @@
             <LinearLayout
                 android:id="@+id/lG"
                 android:layout_width="155dp"
-                android:layout_height="242dp"
+                android:layout_height="200dp"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -313,12 +313,12 @@
 
                 <SeekBar
                     android:id="@+id/sbHG"
-                    style="@style/Widget.AppCompat.SeekBar.Discrete"
+                    style="@style/20dp"
                     android:layout_width="130dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="20dp"
                     android:max="360"
-                    android:progress="1"
-                    android:padding="7dp"/>
+                    android:padding="7dp"
+                    android:progress="1" />
 
                 <TextView
                     android:id="@+id/hueG"
@@ -330,10 +330,10 @@
                     android:id="@+id/sbSG"
                     style="@style/Widget.AppCompat.SeekBar.Discrete"
                     android:layout_width="130dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="20dp"
                     android:max="360"
-                    android:progress="1"
-                    android:padding="7dp"/>
+                    android:padding="7dp"
+                    android:progress="1" />
 
                 <TextView
                     android:id="@+id/satG"
@@ -345,10 +345,10 @@
                     android:id="@+id/sbBG"
                     style="@style/Widget.AppCompat.SeekBar.Discrete"
                     android:layout_width="130dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="20dp"
                     android:max="360"
-                    android:progress="1"
-                    android:padding="7dp"/>
+                    android:padding="7dp"
+                    android:progress="1" />
 
                 <TextView
                     android:id="@+id/briG"
@@ -359,7 +359,7 @@
                 <Button
                     android:id="@+id/btnG"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="43dp"
                     android:text="LAMPS: ON" />
             </LinearLayout>
         </RelativeLayout>
@@ -372,7 +372,7 @@
         android:layout_height="wrap_content"
         android:enabled="true"
         android:text="Scanning bluetooth devices"
-        android:textAppearance="@style/TextAppearance.AppCompat.Button"/>
+        android:textAppearance="@style/TextAppearance.AppCompat.Button" />
 
 
 </LinearLayout>

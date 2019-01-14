@@ -32,7 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Created by Adrien LEBRET on 29.12.2018.
+ * Created by Adrien LEBRET, Daniel IKKA and Victor AYMARD on 29.12.2018.
  * activité permettant les interactions bluetooth
  * activation / désactivation / scan des appareils disponnibles
  */
@@ -107,8 +107,20 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
         // we create a simple array adapter to display devices detected
         listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1);
 
+        // Put all the LED detector red !
+        rect1A.setVisibility(View.INVISIBLE);
+        rect1B.setVisibility(View.VISIBLE);
+
+        rect2A.setVisibility(View.INVISIBLE);
+        rect2B.setVisibility(View.VISIBLE);
+
+        rect3A.setVisibility(View.INVISIBLE);
+        rect3B.setVisibility(View.VISIBLE);
+
         //we check bluetooth state
         checkBluetoothState();
+
+
 
         // Turn on BLE
         if (!bluetoothAdapter.isEnabled()) {
@@ -141,6 +153,15 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
                     if (checkCoarseLocationPermission()) {
                         Log.d("Salope", "Je passe avec le btn");
                         listAdapter.clear();
+                        // Put all the LED detector red !
+                        rect1A.setVisibility(View.INVISIBLE);
+                        rect1B.setVisibility(View.VISIBLE);
+
+                        rect2A.setVisibility(View.INVISIBLE);
+                        rect2B.setVisibility(View.VISIBLE);
+
+                        rect3A.setVisibility(View.INVISIBLE);
+                        rect3B.setVisibility(View.VISIBLE);
                         bluetoothAdapter.startDiscovery();
                     }
                 } else {
@@ -172,6 +193,8 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
 
         rect1A = findViewById(R.id.rect1A);
         rect1B = findViewById(R.id.rect1B);
+
+
 
         l1 = findViewById(R.id.l1);
         //l1.setBackgroundColor(Color.parseColor("#b71a51")); //
@@ -941,7 +964,7 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
 
     public String PCVictorAdresse = "44:85:00:19:CE:5D";
     public String IphoneDAdresse = "F0:98:9D:12:46:64";
-    public String troisiemeDeviceAdresse = "a remplir";
+    public String troisiemeDeviceAdresse = "34:12:f9:af:1c:d3"; // Adrien LEBRET device
 
 
     // we need to implement our revceiver to get devices detected       // config de ce qui est lu ------------------------
@@ -958,16 +981,22 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
                     showToast("Lamp 1 is detected !");
                     Log.d("BLE : ", "lamp 1");
                     isConnected1 = true;
+                    rect1A.setVisibility(View.VISIBLE);
+                    rect1B.setVisibility(View.INVISIBLE);
                 }
                 if (IphoneDAdresse.equals(device.getAddress())) {
                     showToast("Lamp 2 is detected !");
                     Log.d("BLE : ", "lamp 2");
                     isConnected2 = true;
+                    rect2A.setVisibility(View.VISIBLE);
+                    rect2B.setVisibility(View.INVISIBLE);
                 }
                 if (troisiemeDeviceAdresse.equals(device.getAddress())) {
                     showToast("Lamp 3 is detected !");
                     Log.d("BLE : ", "lamp 3");
                     isConnected3 = true;
+                    rect3A.setVisibility(View.VISIBLE);
+                    rect3B.setVisibility(View.INVISIBLE);
                 }
             }
             else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
