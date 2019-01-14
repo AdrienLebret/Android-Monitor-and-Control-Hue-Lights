@@ -124,6 +124,7 @@ public class  bluetooth_connection extends AppCompatActivity {
         scanningBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
                     // we check if coarse location must be asked
                     if (checkCoarseLocationPermission()) {

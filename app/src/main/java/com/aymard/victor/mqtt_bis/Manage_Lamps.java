@@ -56,6 +56,9 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
     private BluetoothAdapter bluetoothAdapter;
     private ArrayAdapter<String> listAdapter;
 
+    // scan btn
+    Button scanningBtn;
+
     // LAMP 1
     LinearLayout l1;
     SeekBar sbH1, sbS1, sbB1;
@@ -83,6 +86,7 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
     TextView hueG, satG, briG;
     Button btnG;
     // http://colorizer.org/
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,13 +123,31 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
         if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
             // we check if coarse location must be asked
             if (checkCoarseLocationPermission()) {
-                Log.d("Salope", "Je passe");
+                Log.d("Salope", "Je passe sans le btn");
                 listAdapter.clear();
                 bluetoothAdapter.startDiscovery();
             }
         } else {
             checkBluetoothState();
         }
+
+
+        scanningBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
+                    // we check if coarse location must be asked
+                    if (checkCoarseLocationPermission()) {
+                        Log.d("Salope", "Je passe avec le btn");
+                        listAdapter.clear();
+                        bluetoothAdapter.startDiscovery();
+                    }
+                } else {
+                    checkBluetoothState();
+                }
+            }
+        });
     }
 
     /**
@@ -137,6 +159,12 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
      * But if we press the button, everything will be fine
      */
     private void initialize() {
+
+        //========
+        // SCAN BTN
+        //========
+
+        scanningBtn = findViewById(R.id.scanningBtn);
 
         //========
         // LAMP 1
@@ -913,6 +941,7 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
 
     public String PCVictorAdresse = "44:85:00:19:CE:5D";
     public String IphoneDAdresse = "F0:98:9D:12:46:64";
+    public String troisiemeDeviceAdresse = "a remplir";
 
 
     // we need to implement our revceiver to get devices detected       // config de ce qui est lu ------------------------
@@ -935,7 +964,19 @@ public class Manage_Lamps extends AppCompatActivity implements MqttCallback {
                     Log.d("BLE : ", "lamp 2");
                     isConnected2 = true;
                 }
+                if (troisiemeDeviceAdresse.equals(device.getAddress())) {
+                    showToast("Lamp 3 is detected !");
+                    Log.d("BLE : ", "lamp 3");
+                    isConnected3 = true;
+                }
             }
+            else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                scanningBtn.setText("Scanning Bluetooth Devices");
+            }
+            else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
+                scanningBtn.setText("Scanning in progres ...");
+            }
+
         }
     };
 
